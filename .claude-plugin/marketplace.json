@@ -1,0 +1,5 @@
+{
+  "name": "recent-screenshots",
+  "owner": { "name": "Jeremy Geros" },
+  "plugins": [{ "name": "recent-screenshots", "source": "./" }]
+}

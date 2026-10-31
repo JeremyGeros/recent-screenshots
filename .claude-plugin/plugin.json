@@ -1,0 +1,6 @@
+{
+  "name": "recent-screenshots",
+  "version": "0.1.0",
+  "description": "Shows screenshots you just took above the prompt; one click adds one to your next prompt",
+  "types": "./types/index.d.ts"
+}

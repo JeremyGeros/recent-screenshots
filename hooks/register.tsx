@@ -125,34 +125,31 @@ export const register: Register = on => {
     if (e.surface !== 'desktop' || e.props.hasSurvey || list.length === 0) return next(e)
 
     const added = await read($, attached)
-    const { Box, Markdown, Text } = $.ui.resolve(e)
-    // Only Button and Markdown links take clicks, and a Button can't hold an
-    // image, so each tile is a markdown image wrapped in a link to its thumbnail.
-    const hrefOf = (shot: Shot) => `file://${THUMBS}/${shot.mtimeMs}.jpg`
-    const images = list.map(shot => {
-      const svg = encodeURIComponent(tile(shot.thumb, added.includes(shot.path)))
-        .replace(/\(/g, '%28')
-        .replace(/\)/g, '%29')
-
-      return `[![Screenshot](data:image/svg+xml;charset=utf-8,${svg})](${hrefOf(shot)})`
-    })
+    const { Box, Markdown } = $.ui.resolve(e)
 
     return (
-      <Box flexDirection="row" gap={2} alignItems="center">
-        <Text dimColor>Recent screenshots</Text>
-        <Markdown
-          key="shots"
-          text={images.join(' ')}
-          pressableLinks={list.map(hrefOf)}
-          onLinkPress={link => {
-            const shot = list.find(s => hrefOf(s) === link.href)
-            if (shot === undefined) return
+      <Box flexDirection="row" gap={1}>
+        {list.map(shot => {
+          // Only Button and Markdown links take clicks, and a Button can't hold an
+          // image, so each tile is a markdown image wrapped in a link.
+          const href = `file://${THUMBS}/${shot.mtimeMs}.jpg`
+          const svg = encodeURIComponent(tile(shot.thumb, added.includes(shot.path)))
+            .replace(/\(/g, '%28')
+            .replace(/\)/g, '%29')
 
-            void update($, attached, l =>
-              l.includes(shot.path) ? l.filter(p => p !== shot.path) : [...l, shot.path],
-            )
-          }}
-        />
+          return (
+            <Markdown
+              key={`shot:${shot.mtimeMs}`}
+              text={`[![Screenshot](data:image/svg+xml;charset=utf-8,${svg})](${href})`}
+              pressableLinks={[href]}
+              onLinkPress={() =>
+                update($, attached, l =>
+                  l.includes(shot.path) ? l.filter(p => p !== shot.path) : [...l, shot.path],
+                )
+              }
+            />
+          )
+        })}
       </Box>
     )
   })

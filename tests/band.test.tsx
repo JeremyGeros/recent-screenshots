@@ -39,13 +39,13 @@ test('a clicked screenshot rides along with the next prompt, then leaves the ban
 
   await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
   const ui = await $.ui.mount(BAND)
-  const tiles = await ui.find({ type: 'Markdown', key: 'shots' })
+  const tiles = await ui.find({ type: 'Markdown', key: 'shot:900' })
   expect(tiles?.props.pressableLinks).toEqual([LINK])
-  await ui.press({ key: 'shots', link: { href: LINK } })
-  expect(String((await ui.find({ type: 'Markdown', key: 'shots' }))?.props.text)).toContain('d97757')
+  await ui.press({ key: 'shot:900', link: { href: LINK } })
+  expect(String((await ui.find({ type: 'Markdown', key: 'shot:900' }))?.props.text)).toContain('d97757')
 
   const sent = await $.prompt.submit({ text: 'what is wrong here?', wait: false, origin: { kind: 'composer' } })
   expect(sent.context?.join('\n')).toContain(PATH)
-  expect(await ui.find({ type: 'Markdown', key: 'shots' })).toBeUndefined()
+  expect(await ui.find({ type: 'Markdown', key: 'shot:900' })).toBeUndefined()
   await ui.unmount()
 })
